@@ -1,0 +1,118 @@
+project_root: ..
+data_root: "C:/Users/14624/xwechat_files/wxid_gehoeaulz1zg11_ac34/msg/file/2025-09/origin/划痕缺陷"
+
+paths:
+  metadata_dir: metadata
+  reports_dir: reports
+  manifests_dir: manifests
+  outputs_dir: outputs
+  cache_dir: outputs/cache
+  checkpoints_dir: outputs/checkpoints
+  predictions_dir: outputs/predictions
+
+seed: 42
+
+audit:
+  expected_header:
+    - Index
+    - AIN 1
+    - AIN 2
+    - AIN 3
+    - AIN 4
+    - AIN 5
+    - AIN 6
+    - AIN 7
+    - AIN 8
+  scan_row_count: true
+  warn_row_count_deviation_ratio: 0.05
+
+preprocessing:
+  channel_columns:
+    - AIN 1
+    - AIN 2
+    - AIN 3
+    - AIN 4
+    - AIN 5
+    - AIN 6
+    - AIN 7
+    - AIN 8
+  normalization: zscore_per_channel
+  window_size: 2048
+  stride: 512
+  max_files: null
+
+splits:
+  strategy: strict_paired_split
+  n_splits: 5
+  seed: 42
+  holdout_position: 5
+  validation_position: 4
+  test_fraction: 0.2
+  val_fraction: 0.1
+
+denoising:
+  batch_size: 4
+  epochs: 2
+  lr: 0.001
+  max_steps: 100
+  loss_weights:
+    reconstruction: 1.0
+    gradient: 0.2
+    peak_valley: 0.2
+    spectral: 0.1
+
+proxy:
+  batch_size: 4
+  epochs: 2
+  lr: 0.001
+  max_steps: 100
+  physics_weight: 0.2
+  discrepancy_weight: 0.01
+  consistency_weight: 0.2
+  position_weight: 0.1
+
+supervised:
+  target_columns:
+    - length
+    - width
+    - depth
+    - area
+  target_normalization: zscore
+  batch_size: 2
+  epochs: 5
+  lr: 0.001
+  max_steps: 100
+  ensemble_size: 1
+  downsample_length: 4096
+
+uq:
+  confidence_z: 1.96
+  calibration_bins: 10
+
+simulation:
+  seed: 42
+  preset: compact_pinn
+  dataset_name: synthetic_pinn_from_real
+  mode: benchmark
+  reference_sample_rows: 12000
+  default_defect_type: synthetic_scratch_defect
+  benchmark:
+    num_positions: 8
+    runs_per_position: 4
+    include_radial: true
+    acquisition_tag: 10K
+    scan_points: 10000
+    cycles_min: 3
+    cycles_max: 5
+  match_real_layout:
+    copy_layout_from_real_data: true
+  defect_priors:
+    length_min: 6.0
+    length_max: 28.0
+    width_min: 1.5
+    width_max: 8.0
+    depth_min: 0.5
+    depth_max: 4.0
+    lift_off_min: 0.8
+    lift_off_max: 2.5
+    center_jitter: 0.18

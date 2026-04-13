@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+manifests/
+reports/
+outputs/
+metadata/*.csv
+configs/generated/
